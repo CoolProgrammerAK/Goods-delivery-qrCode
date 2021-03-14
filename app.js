@@ -255,7 +255,7 @@ app.get("/checkout", function (req, res) {
     res.redirect("/");
   }
   var date = moment(localStorage.getItem("date")).format(
-    "MMMM Do YYYY, h:mm:ss a"
+    "dddd, MMMM Do YYYY, h:mm:ss a"
   );
   res.render("cash", {
     id: localStorage.getItem("id"),
@@ -320,7 +320,7 @@ app.get("/create-checkout-session/success", function (req, res) {
   }
 
   var date = moment(localStorage.getItem("_date")).format(
-    "MMMM Do YYYY, h:mm:ss a"
+    "dddd, MMMM Do YYYY, h:mm:ss a"
   );
   res.render("cash", {
     id: localStorage.getItem("_id"),

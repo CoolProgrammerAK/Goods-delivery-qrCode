@@ -258,7 +258,7 @@ app.get("/checkout", function (req, res) {
   if (!localStorage.getItem("id")) {
     res.redirect("/");
   }
-  var date = moment.utc(localStorage.getItem("date")).format("dddd, MMMM Do YYYY, h:mm:ss a")
+  var date = moment(localStorage.getItem("date")).format("dddd, MMMM Do YYYY, h:mm:ss a")
   res.render("cash", {
     id: localStorage.getItem("id"),
     time: date,
@@ -321,7 +321,7 @@ app.get("/create-checkout-session/success", function (req, res) {
     res.redirect("/");
   }
 
-  var date = moment.utc(localStorage.getItem("_date")).format("dddd, MMMM Do YYYY, h:mm:ss a")
+  var date = moment(localStorage.getItem("_date")).format("dddd, MMMM Do YYYY, h:mm:ss a")
   res.render("cash", {
     id: localStorage.getItem("_id"),
     time: date,

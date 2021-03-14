@@ -207,6 +207,10 @@ app.post("/payment", function (req, res) {
   if (!req.body.products || !localStorage.getItem("firstname")) {
     res.redirect("/");
   }
+  if(!req.body.products  || !req.body.brand){
+    res.render("location");
+  }
+  else{
   const customer = new customermodel({
     firstname: localStorage.getItem("firstname"),
     lastname: localStorage.getItem("lastname"),
@@ -239,7 +243,7 @@ app.post("/payment", function (req, res) {
         res.redirect("/securepay");
       }
     }
-  });
+  });}
 });
 app.get("/securepay", function (req, res) {
   if (!localStorage.getItem("_id") || !localStorage.getItem("brand")) {
@@ -254,9 +258,7 @@ app.get("/checkout", function (req, res) {
   if (!localStorage.getItem("id")) {
     res.redirect("/");
   }
-  var date = moment(localStorage.getItem("date")).format(
-    "dddd, MMMM Do YYYY, h:mm:ss a"
-  );
+  var date = moment.utc(localStorage.getItem("date")).format("dddd, MMMM Do YYYY, h:mm:ss a")
   res.render("cash", {
     id: localStorage.getItem("id"),
     time: date,
@@ -319,9 +321,7 @@ app.get("/create-checkout-session/success", function (req, res) {
     res.redirect("/");
   }
 
-  var date = moment(localStorage.getItem("_date")).format(
-    "dddd, MMMM Do YYYY, h:mm:ss a"
-  );
+  var date = moment.utc(localStorage.getItem("_date")).format("dddd, MMMM Do YYYY, h:mm:ss a")
   res.render("cash", {
     id: localStorage.getItem("_id"),
     time: date,

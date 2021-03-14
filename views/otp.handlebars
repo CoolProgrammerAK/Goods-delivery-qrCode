@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>OTP</title>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.css" />
+  <link rel="stylesheet" href="../public/css/style.css">
+ 
+</head>
+<body>
+{{#if msg}}
+  <div class="alert {{time}}">
+  <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+  {{msg}}
+  </div>
+{{/if}}
+   
+  <div class="container">
+    <h1 class="brand"><span>Welcome User </span> Sign-up</h1>
+    <div class="wrapper animated bounceInLeft">
+      <div class="company-info">
+        <h3>Panda Electronics</h3>
+        <ul>
+          <li><i class="fa fa-map-marker"></i> 33, Rai Market, Ambala, Haryana 133004</li>
+          <li><i class="fa fa-phone"></i> (+91) 9358668593</li><li><i class="fa fa-envelope"></i> ak@gmail.com</li>
+           <li><i class="fa fa-shopping-cart"></i> Electronics and appliances</li>
+           <li><p class="no-margin"><span>&emsp;-</span>TV's,Video-Audio</p></li>
+            <li><p class="no-margin"><span>&emsp;-</span>Kitchen and Other Appliances</p></li>
+             <li><p class="no-margin"><span>&emsp;-</span>Camera and Lenses</p></li>
+           <li><p class="no-margin"><span>&emsp;-</span>Fridge</p></li>
+               <li><p class="no-margin"><span>&emsp;-</span>Mobile Phones</p></li>
+                <li><p class="no-margin"><span>&emsp;-</span>AC's</p></li>
+                 <li><p class="no-margin"><span>&emsp;-</span>Washing Machine</p></li>
+        </ul>
+      </div>
+      <div class="contact">
+       <h1>
+      
+       </h1>
+        <form method="POST" action="verify">
+          <p>
+            <label>Check your inbox for OTP</label>
+            <input type="text" name="otp" required>
+          </p>
+          <input type="text" name="firstname" value={{details.firstname}} hidden >
+          <input type="text" name="lastname"  value={{details.lastname}} hidden>
+          <input type="email" name="email"  value={{details.email}} hidden>
+          <input type="number" name="phone"  value={{details.phone}} hidden>
+          <p class="full">
+            <button type="submit">Submit</button>
+          </p>
+
+        </form>
+        <br>
+        <form method="POST" action="resend">
+         <input type="text" name="firstname" value={{details.firstname}} hidden >
+          <input type="text" name="lastname"  value={{details.lastname}} hidden>
+          <input type="email" name="email"  value={{details.email}} hidden>
+          <input type="number" name="phone"  value={{details.phone}} hidden>
+          <p class="full">
+            <button type="submit">Resend otp</button>
+          </p>
+          
+      </div>
+    </div>
+  </div>
+</body>
+</html>

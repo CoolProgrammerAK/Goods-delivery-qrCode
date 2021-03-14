@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../public/css/style.css">
+   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.css" />
+ 
+  <title>Customer Information</title>
+</head>
+
+<body>
+
+  <div class="container">
+    <div id="head">
+      <h1 class="brand" ><span>Cart </span>Details </h1>
+      <div  id="head2">
+       <a href="/cart"> <button id="btn2">
+          <i class="fa fa-cart-plus"></i> My Orders
+        </button></a>
+        <a href="/logout" id="head2"> <button id="btn2">
+          <i class="fa fa-sign-out"></i> Logout
+        </button></a>
+      </div>
+      
+
+    </div>
+    <div class="wrapper animated bounceInLeft">
+      <div class="company-info">
+        <h3>Panda Electronics</h3>
+        <ul>
+          <li><i class="fa fa-map-marker"></i> 33, Rai Market, Ambala, Haryana 133004</li>
+          <li><i class="fa fa-phone"></i> (+91) 9358668593</li>
+          <li><i class="fa fa-envelope"></i> ak@gmail.com</li>
+          <li><i class="fa fa-shopping-cart"></i> Electronics and appliances</li>
+          <li>
+            <p class="no-margin"><span>&emsp;-</span>TV's,Video-Audio</p>
+          </li>
+          <li>
+            <p class="no-margin"><span>&emsp;-</span>Kitchen and Other Appliances</p>
+          </li>
+          <li>
+            <p class="no-margin"><span>&emsp;-</span>Camera and Lenses</p>
+          </li>
+          <li>
+            <p class="no-margin"><span>&emsp;-</span>Fridge</p>
+          </li>
+          <li>
+            <p class="no-margin"><span>&emsp;-</span>Mobile Phones</p>
+          </li>
+          <li>
+            <p class="no-margin"><span>&emsp;-</span>AC's</p>
+          </li>
+          <li>
+            <p class="no-margin"><span>&emsp;-</span>Washing Machine</p>
+          </li>
+        </ul>
+      </div>
+      <div class="contact">
+        <h3>Hi <b>{{firstname}} {{lastname}},</b></h3>
+        <form method="POST" action="payment">
+          <p class="full">
+            <label>Delivery Location</label>
+            <input type="text" name="location" required>
+          </p>
+          <p>
+            <label>Product Category</label>
+            <select name="products" required>
+              <option selected="true" disabled="disabled">Choose Product</option>
+              <option value="TV">TV's</option>
+              <option value="Kitchen and Other Appliances">Kitchen and Other Appliances</option>
+              <option value="Camera and Lenses">Camera and Lenses</option>
+              <option value="Fridge">Fridge </option>
+              <option value="Mobile">Mobile </option>
+              <option value="AC">AC </option>
+              <option value="Washing Machine">Washing Machine </option>
+              
+
+
+            </select>
+
+          </p>
+          <p>
+            <label>Brand</label>
+            <select name="brand" required>
+              <option selected="true" disabled="disabled">Choose Brand</option>
+
+
+
+              <option value="Bajaj">Bajaj </option>
+              <option value="Blue Star">Blue Star </option>
+              <option value="Canon">Canon </option>
+              <option value="Daikin">Daikin </option>
+              <option value="Haier">Haier </option>
+              <option value="Lenovo">Lenovo</option>
+              <option value="LG">LG</option>
+              <option value="Nikon">Nikon</option>
+              <option value="Oppo">Oppo </option>
+              <option value="Panasonic">Panasonic </option>
+
+
+
+              <option value="Philips">Philips </option>
+              <option value="Realme">Realme</option>
+              <option value="Red Mi">Red Mi</option>
+
+              <option value="Samsung">Samsung</option>
+              <option value="Sony">Sony</option>
+
+
+
+              <option value="Vivo"> Vivo </option>
+
+
+              <option value="WhirlPool"> WhirlPool </option>
+              <option value="other"> Other Brand </option>
+
+
+
+
+
+
+
+
+            </select>
+
+          </p>
+          <p class="full">
+            <label>Mode of Payment</label>
+            <select name="payment" required>
+              <option value="cash">Cash on Delivery</option>
+              <option value="Online">Online payment</option>
+
+            </select>
+          </p>
+
+
+
+
+          <p class="full">
+            <button type="submit">Submit</button>
+          </p>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+
+</body>
+
+</html>

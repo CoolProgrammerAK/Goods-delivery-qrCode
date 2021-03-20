@@ -13,7 +13,7 @@
     <title>Customer Information</title>
 </head>
 
-<body>
+<body style="min-width: fit-content;">
 
     <div class="container">
         <div id="head">
@@ -62,16 +62,16 @@
             </div>
             <div class="contact">
                 <h3>Choose vehicle</b></h3>
-                <div>
+                <div style="min-width: 350px;">
                     {{#each data}}
-                    <div id="card">
+                    <div id="card" style="overflow-x: auto;">
                         <div>
                             <img id="profile" src="{{profile}}">
                         </div>
                         <div style="display:grid;grid-template-rows:79px 41px">
-                            <div style="margin-left:40px;">
+                            <div style="margin-left:25px;">
                                 <p style="margin-bottom: 0px;"><span id="info">{{name}} </span>
-                                    <span>&emsp;</span>
+                                    <span>  </span>
                                     {{#if verified}}
 
                                     <i class="fa fa-check-circle" style="color: green;"></i><span> Verified</span>
@@ -80,7 +80,7 @@
                                 <p class="price">{{vehicle}}</p>
                             </div>
                             <div style="background-color: rgb(214, 221, 221)">
-                                <p style="margin:8px 0px 3px 40px ;">Contact: {{phone}}</p>
+                                <p style="margin:8px 0px 3px 25px ;" id="contact">Contact: {{phone}}</p>
                             </div>
 
                         </div>
@@ -116,8 +116,6 @@
                     {{/each}}
                 </div>
 
-                <input id="specialid" hidden>
-                <button type="button" id="checkoutbutton" hidden></button>
             </div>
         </div>
 

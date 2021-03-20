@@ -10,6 +10,7 @@ const stripe = require("stripe")(
   "sk_test_51ITLh0KqdSYTqsLlXsxLFTgcTXKfTZYkxoZPIV08VpjCbCv6rLjhfsDkfkMPg2CU0HSaG7eZ1bGD0hVDi04nt0NA00FXnW4Mb7"
 );
 const customermodel = require("./module/customer");
+const vehiclemodel = require("./module/vehiclemodel");
 const { MONGOURL } = require("./keys");
 
 if (typeof localStorage == "undefined" || localStorage == null) {
@@ -71,6 +72,7 @@ app.post("/send", function (req, res) {
 
   var mailOptions = {
     to: req.body.email,
+    from: "avineykhetarpal01@gmail.com",
     subject: "Otp for registration is: ",
     html:
       "<h3>OTP for account verification is </h3>" +
@@ -199,6 +201,7 @@ app.get("/details", function (req, res) {
   if (!localStorage.getItem("email") || !localStorage.getItem("phone")) {
     res.redirect("/");
   }
+
   var firstname = localStorage.getItem("firstname");
   var lastname = localStorage.getItem("lastname");
   res.render("location", { firstname: firstname, lastname: lastname });
@@ -207,75 +210,151 @@ app.post("/payment", function (req, res) {
   if (!req.body.products || !localStorage.getItem("firstname")) {
     res.redirect("/");
   }
-  if(!req.body.products  || !req.body.brand){
+  if (!req.body.products) {
     res.render("location");
-  }
-  else{
-  const customer = new customermodel({
-    firstname: localStorage.getItem("firstname"),
-    lastname: localStorage.getItem("lastname"),
-    email: localStorage.getItem("email"),
-    phone: localStorage.getItem("phone"),
-    product_category: req.body.products,
-    product_brand: req.body.brand,
-    address: req.body.location,
-    mode_of_payment: req.body.payment,
-  });
-  customer.save((err, resp) => {
-    if (err) {
-      res.render("error", {
-        msg:
-          "Due to some network problem,request will not be proceded. Sorry for your inconvenience. ",
-      });
-    }
-    if (resp) {
-      if (resp.mode_of_payment == "cash") {
-        localStorage.setItem("id", resp._id);
-        localStorage.setItem("date", resp.date);
-
-        res.redirect("/checkout");
-      } else {
-        localStorage.setItem("_id", resp._id);
-        localStorage.setItem("_date", resp.date);
-        localStorage.setItem("category", resp.product_category);
-        localStorage.setItem("brand", resp.product_brand);
-
-        res.redirect("/securepay");
+  } else {
+    const customer = new customermodel({
+      firstname: localStorage.getItem("firstname"),
+      lastname: localStorage.getItem("lastname"),
+      email: localStorage.getItem("email"),
+      phone: localStorage.getItem("phone"),
+      product_category: req.body.products,
+      address: req.body.location,
+      mode_of_payment: req.body.payment,
+    });
+    customer.save((err, resp) => {
+      if (err) {
+        res.render("error", {
+          msg:
+            "Due to some network problem,request will not be proceded. Sorry for your inconvenience. ",
+        });
       }
-    }
-  });}
+      if (resp) {
+        if (resp.mode_of_payment == "cash") {
+          localStorage.setItem("id", resp._id);
+          localStorage.setItem("date", resp.date);
+
+          res.redirect("/securepay/cash");
+        } else {
+          localStorage.setItem("_id", resp._id);
+          localStorage.setItem("_date", resp.date);
+
+          res.redirect("/securepay/online");
+        }
+      }
+    });
+  }
 });
-app.get("/securepay", function (req, res) {
-  if (!localStorage.getItem("_id") || !localStorage.getItem("brand")) {
+app.get("/securepay/:method", function (req, res) {
+  if (!localStorage.getItem("_id") && !localStorage.getItem("id")) {
     res.redirect("/");
   }
-  res.render("online");
 
-  // console.log(req.protocol + '://' + req.get('host') + req.originalUrl)
+  if (req.params.method == "cash") {
+    vehiclemodel.find({}).exec((err, dat) => {
+      if (err) throw err;
+      let list = dat.map((item) => {
+        return {
+          name: item.name,
+          phone: item.phone,
+          vehicle: item.vehicle,
+          profile: item.profile,
+          price: item.price,
+          license: item.license,
+          act: false,
+          verified: item.verified,
+          date: moment(item.date).format("dddd, MMMM Do YYYY, h:mm:ss a"),
+          _id: item._id,
+        };
+      });
+      res.render("online", { data: list });
+    });
+  } else {
+    vehiclemodel.find({}).exec((err, dat) => {
+      if (err) throw err;
+      let list = dat.map((item) => {
+        return {
+          name: item.name,
+          phone: item.phone,
+          vehicle: item.vehicle,
+          profile: item.profile,
+          price: item.price,
+          license: item.license,
+          verified: item.verified,
+          act: true,
+          date: moment(item.date).format("dddd, MMMM Do YYYY, h:mm:ss a"),
+          _id: item._id,
+        };
+      });
+      res.render("online", { data: list });
+    });
+  }
 });
 
-app.get("/checkout", function (req, res) {
+app.post("/cash", function (req, res) {
+  if (!req.body.id) {
+    res.redirect("/");
+  }
   if (!localStorage.getItem("id")) {
     res.redirect("/");
   }
-  var date = moment(localStorage.getItem("date")).format("dddd, MMMM Do YYYY, h:mm:ss a")
-  res.render("cash", {
-    id: localStorage.getItem("id"),
-    time: date,
-    name: localStorage.getItem("firstname"),
-    email: localStorage.getItem("email"),
+
+  var del = customermodel
+    .findByIdAndUpdate(localStorage.getItem("id"), {
+      vehicle: {
+        id: req.body.id,
+        phone: req.body.phone,
+        category: req.body.vehicle,
+        name: req.body.name,
+      },
+    })
+    .populate("vehicle");
+  del.exec((err, data) => {
+    localStorage.setItem("dphone", req.body.phone);
+    localStorage.setItem("name", req.body.name);
+    localStorage.setItem("vehicle", req.body.vehicle);
+
+    if (err) throw err;
+
+    res.redirect("/checkout");
   });
 });
-
-app.post("/create-checkout-session", async (req, res) => {
+// app.post("/redirect",function(req,res){
+//   if (!req.body.id) {
+//     res.redirect("/");
+//   }
+//   res.render("redirect",{data: req.body.price, id: req.body.id, vehicle: req.body.vehicle,name:req.body.name,phone:req.body.phone})
+// })
+app.get("/checkout", function (req, res) {
   if (
-    !localStorage.getItem("_id") ||
-    !localStorage.getItem("brand") ||
-    !req.body.data
+    !localStorage.getItem("id") ||
+    !localStorage.getItem("vehicle") ||
+    !localStorage.getItem("name")
   ) {
     res.redirect("/");
   }
+  var date = moment(localStorage.getItem("date")).format(
+    "dddd, MMMM Do YYYY, h:mm:ss a"
+  );
+  res.render("cash", {
+    id: localStorage.getItem("id"),
+    time: date,
+    name: localStorage.getItem("name"),
+    firstname: localStorage.getItem("firstname"),
+    phone: localStorage.getItem("dphone"),
+    vehicle: localStorage.getItem("vehicle"),
+  });
+});
 
+
+//
+// });
+//onclick="runn('{{_id}}','{{phone}}','{{vehicle}}','{{price}}','{{name}}')"
+app.post("/create-checkout-session", async (req, res) => {
+ 
+  if (!localStorage.getItem("_id") || !req.body.data) {
+    res.redirect("/");
+  }
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     line_items: [
@@ -283,8 +362,7 @@ app.post("/create-checkout-session", async (req, res) => {
         price_data: {
           currency: "INR",
           product_data: {
-            name: localStorage.getItem("category"),
-            // brand:localStorage.getItem("brand"),
+            name: req.body.vehicle,
           },
           unit_amount: parseInt(req.body.data) * 100,
         },
@@ -297,40 +375,47 @@ app.post("/create-checkout-session", async (req, res) => {
     }/success`,
     cancel_url: `${
       req.protocol + "://" + req.get("host") + req.originalUrl
-    }/error`,
+    }/success`,
   });
 
-  var del = customermodel.findByIdAndUpdate(localStorage.getItem("_id"), {
-    money_received: parseInt(req.body.data),
-    session_id: session.id,
-  });
-  del.exec((err, data) => {
+    customermodel.findByIdAndUpdate(
+    localStorage.getItem("_id"),
+   {
+     vehicle:{ id:req.body.id,phone:req.body.phone,category:req.body.vehicle,name:req.body.name}
+ },).exec((err, data) => {
     if (err) throw err;
 
+ res.json({id:session.id})
+    localStorage.setItem("dphone", req.body.phone);
+    localStorage.setItem("name", req.body.name);
+    localStorage.setItem("vehicle", req.body.vehicle);
     localStorage.setItem("successid", session.id);
-    res.json({ id: session.id });
-  });
-});
 
+   })
+});
 app.get("/create-checkout-session/success", function (req, res) {
   if (
     !localStorage.getItem("_id") ||
-    !localStorage.getItem("brand") ||
-    !localStorage.getItem("successid")
+    !localStorage.getItem("successid") ||
+    !localStorage.getItem("vehicle") ||
+    !localStorage.getItem("name")
   ) {
     res.redirect("/");
   }
 
-  var date = moment(localStorage.getItem("_date")).format("dddd, MMMM Do YYYY, h:mm:ss a")
+  var date = moment(localStorage.getItem("_date")).format(
+    "dddd, MMMM Do YYYY, h:mm:ss a"
+  );
   res.render("cash", {
     id: localStorage.getItem("_id"),
     time: date,
-    name: localStorage.getItem("firstname"),
-    email: localStorage.getItem("email"),
+    name: localStorage.getItem("name"),
+    phone: localStorage.getItem("dphone"),
+    vehicle: localStorage.getItem("vehicle"),
   });
 });
 app.get("/create-checkout-session/error", function (req, res) {
-  if (!localStorage.getItem("_id") || !localStorage.getItem("brand")) {
+  if (!localStorage.getItem("_id")) {
     res.redirect("/");
   }
 
@@ -358,14 +443,19 @@ app.get("/cart", function (req, res) {
   });
   data.exec((err, dat) => {
     if (err) throw err;
-    let list = dat.map((item)=>{
-      return { mode_of_payment:item.mode_of_payment,product_category:item.product_category,
-         product_brand:item.product_brand,date:moment(item.date).format(
-          "DD/MM/YYYY"
-        ),_id:item._id }
-  });
-  
-    res.render("cart",{data:list})
+    let list = dat.map((item) => {
+      return {
+        mode_of_payment: item.mode_of_payment,
+        product_category: item.product_category,
+        date: moment(item.date).format("DD/MM/YYYY"),
+        _id: item._id,
+        driver: item.vehicle.name,
+        vehicle: item.vehicle.category,
+        phone: item.vehicle.phone,
+      };
+    });
+
+    res.render("cart", { data: list });
   });
 });
 app.get("*", function (req, res) {

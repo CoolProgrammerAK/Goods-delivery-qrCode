@@ -88,24 +88,28 @@
   .contact form .full{
     grid-column: 1 / 3;
   }
-  .contact form button, .contact form input, .contact form textarea,.contact form select{
+  .contact form #btn, .contact form input, .contact form textarea,.contact form select{
     width:100%;
     padding:1em;
     border:1px solid #c9e6ff;
   }
   
-  .contact form button{
+  .contact form #btn{
     background:#84abce;
     border:0;
     text-transform: uppercase;
     color:#fff;
   }
   
-  .contact form button:hover,.contact form button:focus{
+  .contact form #btn:hover,.contact form #btn:focus{
     background:#587999;
     color:#fff;
     outline:0;
     transition: background-color 2s ease-out;
+  }
+  .frm{
+    display: block!important;
+  height: 100%;
   }
   #btn2{
     background:#d32626;
@@ -195,4 +199,51 @@
     #head2{
       margin: auto;
     }
+  }
+
+  #profile{
+width: 115px;
+height: 120px;
+display: block;
+
+  }
+ 
+  #card {
+    display: grid;
+    grid-template-columns: 1fr 5fr 1fr;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+  }
+  .price {
+    color: rgb(29, 27, 27);
+    font-size: 17px;
+    margin: 0px;
+    font-weight: 600;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  }
+  
+  .button {
+    border: none;
+    outline: 0;
+    padding: 12px;
+    color: white;
+    background-color: #000;
+    text-align: center;
+    cursor: pointer;
+    width: 100%;height: 100%;
+    font-size: 18px;
+  }
+  
+  .button:hover {
+    opacity: 0.7;
+  }
+  #info{
+    font-size: 18px;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: 700;
+  }
+  #decor{
+    background-color: #b4bcc4;
   }

@@ -1,14 +1,15 @@
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.css" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+        integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.css" />
     <script src="https://js.stripe.com/v3/"></script>
-   <link rel="stylesheet" href="../public/css/style.css">
+    <link rel="stylesheet" href="../public/css/style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?version=3.52.1&features=fetch"></script>
     <title>Customer Information</title>
 </head>
 
@@ -16,18 +17,18 @@
 
     <div class="container">
         <div id="head">
-      <h1 class="brand" ><span>Price </span>Details </h1>
-      <div  id="head2">
-       <a href="/cart"> <button id="btn2">
-          <i class="fa fa-cart-plus"></i> My Orders
-        </button></a>
-        <a href="/logout" id="head2"> <button id="btn2">
-          <i class="fa fa-sign-out"></i> Logout
-        </button></a>
-      </div>
-      
+            <h1 class="brand"><span>Vehicle </span>Details </h1>
+            <div id="head2">
+                <a href="/cart"> <button id="btn2">
+                        <i class="fa fa-cart-plus"></i> My Orders
+                    </button></a>
+                <a href="/logout" id="head2"> <button id="btn2">
+                        <i class="fa fa-sign-out"></i> Logout
+                    </button></a>
+            </div>
 
-    </div>
+
+        </div>
         <div class="wrapper animated bounceInLeft">
             <div class="company-info">
                 <h3>Panda Electronics</h3>
@@ -60,68 +61,103 @@
                 </ul>
             </div>
             <div class="contact">
-                <h3>Enter amount</b></h3>
-<form>
-                <p class="full">
-                    <label>Amount (in Rupees)</label>
-                    <input type="number" onchange="myFunction(this.value)"  class="Field" name="price" required>
-                </p>
-                <p class="full">
-                    <button type="button"  id="checkout-button">Submit</button>
-                </p>
-</form>
+                <h3>Choose vehicle</b></h3>
+                <div>
+                    {{#each data}}
+                    <div id="card">
+                        <div>
+                            <img id="profile" src="{{profile}}">
+                        </div>
+                        <div style="display:grid;grid-template-rows:79px 41px">
+                            <div style="margin-left:40px;">
+                                <p style="margin-bottom: 0px;"><span id="info">{{name}} </span>
+                                    <span>&emsp;</span>
+                                    {{#if verified}}
+
+                                    <i class="fa fa-check-circle" style="color: green;"></i><span> Verified</span>
+                                    {{/if}}
+                                </p>
+                                <p class="price">{{vehicle}}</p>
+                            </div>
+                            <div style="background-color: rgb(214, 221, 221)">
+                                <p style="margin:8px 0px 3px 40px ;">Contact: {{phone}}</p>
+                            </div>
+
+                        </div>
+                        <div>
+                            {{#if act}}
+
+                            <button id="{{_id}}" onclick="set('{{_id}}','{{phone}}','{{vehicle}}','{{price}}','{{name}}')" class="button">
+                                <p> Rs <span id="money">{{price}} </span> </p>
+                                <input name="id" value="{{_id}}" hidden>
+                                <input name="phone" value="{{phone}}" hidden>
+                                <input name="name" value="{{name}}" hidden>
+                                <input name="vehicle" value="{{vehicle}}" hidden>
+                            </button>
+
+
+
+
+                            {{else}}
+                            <form method="POST" action="/cash" class="frm">
+
+                                <button class="button">Rs <span id="money">{{price}} </span></button>
+                                <input name="id" value="{{_id}}" hidden>
+                                <input name="phone" value="{{phone}}" hidden>
+                                <input name="name" value="{{name}}" hidden>
+                                <input name="vehicle" value="{{vehicle}}" hidden>
+
+                            </form>
+                            {{/if}}
+
+
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+
+                <input id="specialid" hidden>
+                <button type="button" id="checkoutbutton" hidden></button>
             </div>
         </div>
 
     </div>
-
-    <script type="text/javascript">
-        // Create an instance of the Stripe object with your publishable API key
-        var stripe = Stripe("pk_test_51ITLh0KqdSYTqsLlL0w18ASLnIZCxi7qOQ5sDAOAIii1KBm4WeybZtieRvrgIoWUcFaDRcomP8DltqXS4KnBJYv900KXTQ1yyL");
-        var pay = document.querySelector(".Field")
-   
-        var checkoutButton = document.querySelector("#checkout-button");
-          function myFunction(sval) {
-  pay.value=sval
-}
-        checkoutButton.addEventListener("click", function () {
-       
-            if(
-                pay.value){
-                    checkoutButton.disabled=true
-                 fetch("/create-checkout-session", {
-                     headers: {
-        "Content-Type": "application/json",
-      },
-                method: "POST",
-                body:JSON.stringify({data:pay.value})
-
-                
-            })
-                .then(function (response) {
-                    return response.json();
-                })
-                .then(function (session) {
-checkoutButton.disabled=false
-                    return stripe.redirectToCheckout({ sessionId: session.id });
-                })
-                .then(function (result) {
-                    checkoutButton.disabled=false
-                    if (result.error) {
-                        alert(result.error.message);
-                    }
-                })
-                .catch(function (error) {
-                    checkoutButton.disabled=false
-                    console.error("Error:", error);
-                });
-            }
-            else{
-                alert("Enter amount")
-            }
-           
-        });
-    </script>
 </body>
+<script type="text/javascript">
+
+    var stripe = Stripe("pk_test_51ITLh0KqdSYTqsLlL0w18ASLnIZCxi7qOQ5sDAOAIii1KBm4WeybZtieRvrgIoWUcFaDRcomP8DltqXS4KnBJYv900KXTQ1yyL");
+
+    function set(id,phone,vehicle,price,name){
+       fetch("/create-checkout-session", {
+            headers: {
+                "Content-Type": "application/json",
+            },
+            method: "POST",
+            body: JSON.stringify({
+                data: price, 
+                 id: id, vehicle: vehicle, name: name, phone: phone
+            })
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (session) {
+                return stripe.redirectToCheckout({ sessionId: session.id });
+            })
+            .then(function (result) {
+
+                if (result.error) {
+                    alert(result.error.message);
+                }
+            })
+            .catch(function (error) {
+                console.error("Error:", error);
+            });
+    }
+   
+
+
+</script>
+
 
 </html>
